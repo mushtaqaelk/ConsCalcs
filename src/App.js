@@ -19,30 +19,46 @@ const AppProvider = ({ children }) => {
 
 const useNav = () => useContext(AppContext);
 
-//--- UTILITY: CONSENSUS CALCULATOR LOGIC ---//
+//--- UTILITY: CONSENSUS CALCULATOR LOGIC (CORRECTED) ---//
 const calculateConsensus = (C, D) => {
+    // Validate inputs
     if (typeof C !== 'number' || typeof D !== 'number' || isNaN(C) || isNaN(D) || C < 1 || C > 5 || D < 0) {
         return { C: null, D: null, E: null, F: null, G: null, H: null, I: null, J: null, K: null, L: null, error: 'Invalid input. Mean (C) must be 1-5, Variance (D) must be non-negative.' };
     }
 
+    // Step 1: Calculate intermediate variables
     const E = C > 3 ? 6 - C : C;
     const F = (E - 1) / 2;
     const G = Math.max(0, E - 2);
     const H = (D + E ** 2 - 3 * E + 2) / 2;
     const I = 2 * F ** 3 - G ** 3;
+
+    // Step 2: Calculate J using the original complex formula
     let J;
-    if (I === 0) { J = 0; }
-    else if (H < F) { J = H ** 3 / 3; }
-    else if (H < 2 * F) { J = (H ** 3 / 3) - Math.pow(H - F, 3); }
-    else { J = F ** 2 * (H - F); }
+    if (H < F) {
+        J = H ** 3 / 3;
+    } else if (H < 2 * F) {
+        J = (H ** 3 / 3) - (H - F) ** 3;
+    } else {
+        J = 2 * F ** 3;
+    }
+
+    // Step 3: Calculate K using the original complex formula
     let K;
-    if (I === 0) { K = 0; }
-    else if (H < G) { K = 0; }
-    else if (H < (3 * G) / 2) { K = (H ** 3 / 3) - 2 * Math.pow(H - G, 3); }
-    else if (H < 2 * G) { K = (2*G**3)/3 - G**2*(2*G-H) + (H-2*G)**3/3; }
-    else { K = G ** 3; }
+     if (H < G) {
+        K = 0;
+    } else if (H < 1.5 * G) {
+        K = H ** 3 / 3 - 2 * (H-G)**3;
+    } else if (H < 2 * G) {
+        K = (2 * G**3)/3 - G**2 * (2*G - H) + (H - 2*G)**3/3;
+    } else {
+        K = G ** 3;
+    }
+    
+    // Step 4: Calculate the final Index of Disagreement (L)
     const L = I !== 0 ? (J - K) / I : 0;
 
+    // Return all results
     return { C, D, E, F, G, H, I, J, K, L, error: null };
 };
 
@@ -639,14 +655,6 @@ const ContactPage = () => {
 
 
 //--- MAIN APP COMPONENT ---//
-function App() {
-    return (
-        <AppProvider>
-            <AppContent />
-        </AppProvider>
-    );
-}
-
 function AppContent() {
     const { activePage } = useNav();
 
@@ -683,5 +691,10 @@ function AppContent() {
     );
 }
 
-// Note: The Vercel Deployment entry point has been moved to a separate index.js file.
-export default App;
+export default function App() {
+    return (
+        <AppProvider>
+            <AppContent />
+        </AppProvider>
+    );
+}
