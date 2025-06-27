@@ -1,5 +1,4 @@
 import React, { useState, useMemo, createContext, useContext } from 'react';
-import ReactDOM from 'react-dom/client';
 import { TrendingUp, FileText, FlaskConical, PenSquare, MessageSquare, Copy, Download, Info, Search, ChevronsUpDown, X, Menu } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -684,29 +683,5 @@ function AppContent() {
     );
 }
 
-//--- VERCEL DEPLOYMENT ENTRY POINT ---//
-// Vercel expects a root element in your public/index.html or equivalent.
-// We'll simulate that by assuming an element with id="root" exists.
-// This code will find that root element and render our React app into it.
-
-const rootElement = document.getElementById('root');
-if (rootElement) {
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>
-    );
-} else {
-    // In a real project, you would have an index.html file with <div id="root"></div>.
-    // For this environment, we create it if it doesn't exist.
-    const newRoot = document.createElement('div');
-    newRoot.id = 'root';
-    document.body.appendChild(newRoot);
-    const root = ReactDOM.createRoot(newRoot);
-    root.render(
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>
-    );
-}
+// Note: The Vercel Deployment entry point has been moved to a separate index.js file.
+export default App;
