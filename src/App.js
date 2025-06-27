@@ -19,7 +19,7 @@ const AppProvider = ({ children }) => {
 
 const useNav = () => useContext(AppContext);
 
-//--- UTILITY: CONSENSUS CALCULATOR LOGIC (CORRECTED) ---//
+//--- UTILITY: CONSENSUS CALCULATOR LOGIC (FINAL CORRECTION) ---//
 const calculateConsensus = (C, D) => {
     // Validate inputs
     if (typeof C !== 'number' || typeof D !== 'number' || isNaN(C) || isNaN(D) || C < 1 || C > 5 || D < 0) {
@@ -30,29 +30,31 @@ const calculateConsensus = (C, D) => {
     const E = C > 3 ? 6 - C : C;
     const F = (E - 1) / 2;
     const G = Math.max(0, E - 2);
-    const H = (D + E ** 2 - 3 * E + 2) / 2;
-    const I = 2 * F ** 3 - G ** 3;
+    const H = (D + E**2 - 3 * E + 2) / 2;
+    const I = 2 * F**3 - G**3;
 
-    // Step 2: Calculate J using the original complex formula
+    // Step 2: Calculate J using the correct original formula
     let J;
-    if (H < F) {
-        J = H ** 3 / 3;
-    } else if (H < 2 * F) {
-        J = (H ** 3 / 3) - (H - F) ** 3;
-    } else {
-        J = 2 * F ** 3;
+    if (I === 0) { 
+        J = 0; 
+    } else if (H < F) { 
+        J = H**3 / 3; 
+    } else if (H < 2 * F) { 
+        J = (H**3 / 3) - Math.pow(H - F, 3); 
+    } else { 
+        J = 2 * F**3 + (Math.pow(H - 3 * F, 3)) / 3; 
     }
 
-    // Step 3: Calculate K using the original complex formula
+    // Step 3: Calculate K using the correct original formula
     let K;
-     if (H < G) {
-        K = 0;
-    } else if (H < 1.5 * G) {
-        K = H ** 3 / 3 - 2 * (H-G)**3;
-    } else if (H < 2 * G) {
-        K = (2 * G**3)/3 - G**2 * (2*G - H) + (H - 2*G)**3/3;
-    } else {
-        K = G ** 3;
+    if (I === 0) { 
+        K = 0; 
+    } else if (H < (3 * G) / 2) { 
+        K = (H**3 / 3) - 2 * Math.pow(H - G, 3); 
+    } else if (H < 2 * G) { 
+        K = G**3 + Math.pow(H - 2 * G, 3); 
+    } else { 
+        K = G**3; 
     }
     
     // Step 4: Calculate the final Index of Disagreement (L)
