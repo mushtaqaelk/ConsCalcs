@@ -373,9 +373,9 @@ const ResearchPage = () => {
     const [copySuccess, setCopySuccess] = useState('');
 
     const citations = {
-        APA: "Researcher, A. (2025). The index of disagreement: A novel framework for consensus measurement. Journal of Advanced Quantitative Methods, 15(2), 123-145. https://doi.org/10.xxxx/j.jaqm.2025.xx.xxx",
-        MLA: 'Researcher, Anonymous. "The Index of Disagreement: A Novel Framework for Consensus Measurement." Journal of Advanced Quantitative Methods, vol. 15, no. 2, 2025, pp. 123-45, doi:10.xxxx/j.jaqm.2025.xx.xxx.',
-        BibTeX: `@article{researcher2025index,\n  title={The Index of Disagreement: A Novel Framework for Consensus Measurement},\n  author={Researcher, Anonymous},\n  journal={Journal of Advanced Quantitative Methods},\n  volume={15},\n  number={2},\n  pages={123--145},\n  year={2025},\n  publisher={Academic Press},\n  doi={10.xxxx/j.jaqm.2025.xx.xxx}\n}`
+        APA: "Researcher, A. (2025). The index of disagreement: A novellllllllllllll framework for consensus measurement. Journal of Advanced Quantitative Methods, 15(2), 123-145. https://doi.org/10.xxxx/j.jaqm.2025.xx.xxx",
+        MLA: 'Researcher, Anonymous. "The Index of Disagreement: A Novellllllllllll Framework for Consensus Measurement." Journal of Advanced Quantitative Methods, vol. 15, no. 2, 2025, pp. 123-45, doi:10.xxxx/j.jaqm.2025.xx.xxx.',
+        BibTeX: `@article{researcher2025index,\n  title={The Index of Disagreement: A Novellllllllll Framework for Consensus Measurement},\n  author={Researcher, Anonymous},\n  journal={Journal of Advanced Quantitative Methods},\n  volume={15},\n  number={2},\n  pages={123--145},\n  year={2025},\n  publisher={Academic Press},\n  doi={10.xxxx/j.jaqm.2025.xx.xxx}\n}`
     };
 
     const copyToClipboard = (text) => {
