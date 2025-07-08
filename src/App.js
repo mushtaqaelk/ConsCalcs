@@ -35,26 +35,26 @@ const calculateConsensus = (C, D) => {
 
     // Step 2: Calculate J using the correct original formula
     let J;
-    if (I === 0) { 
-        J = 0; 
-    } else if (H < F) { 
-        J = H**3 / 3; 
-    } else if (H < 2 * F) { 
-        J = (H**3 / 3) - Math.pow(H - F, 3); 
-    } else { 
-        J = 2 * F**3 + (Math.pow(H - 3 * F, 3)) / 3; 
+    if (I === 0) {
+        J = 0;
+    } else if (H < F) {
+        J = H**3 / 3;
+    } else if (H < 2 * F) {
+        J = (H**3 / 3) - Math.pow(H - F, 3);
+    } else {
+        J = 2 * F**3 + (Math.pow(H - 3 * F, 3)) / 3;
     }
 
     // Step 3: Calculate K using the correct original formula
     let K;
-    if (I === 0) { 
-        K = 0; 
-    } else if (H < (3 * G) / 2) { 
-        K = (H**3 / 3) - 2 * Math.pow(H - G, 3); 
-    } else if (H < 2 * G) { 
-        K = G**3 + Math.pow(H - 2 * G, 3); 
-    } else { 
-        K = G**3; 
+    if (I === 0) {
+        K = 0;
+    } else if (H < (3 * G) / 2) {
+        K = (H**3 / 3) - 2 * Math.pow(H - G, 3);
+    } else if (H < 2 * G) {
+        K = G**3 + Math.pow(H - 2 * G, 3);
+    } else {
+        K = G**3;
     }
     
     // Step 4: Calculate the final Index of Disagreement (L)
@@ -172,35 +172,35 @@ const CustomTooltip = ({ text, children }) => {
     );
 };
 
+/**
+ * UPDATED GAUGE CHART COMPONENT
+ * This component now displays a linear progress bar instead of a radial gauge.
+ * It uses framer-motion for a smooth animation effect.
+ * The component's interface (props) remains the same to ensure it's a non-breaking change.
+ */
 const GaugeChart = ({ value }) => {
+    // Clamp the value between 0 and 1 to handle potential edge cases from the formula.
     const clampedValue = Math.max(0, Math.min(1, value || 0));
-    const angle = clampedValue * 180;
-    
+    const percentage = clampedValue * 100;
+
     return (
-        <div className="w-full max-w-xs mx-auto flex flex-col items-center">
-            <div className="relative w-full" style={{paddingBottom: '50%'}}>
-                 <svg viewBox="0 0 100 55" className="absolute top-0 left-0 w-full h-full">
-                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#334155" strokeWidth="10" />
-                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#gradient)" strokeWidth="10" strokeLinecap="round" />
-                    <motion.g
-                        initial={{ rotate: 0 }}
-                        animate={{ rotate: angle }}
-                        transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-                        transform-origin="50 50"
-                    >
-                        <line x1="50" y1="50" x2="50" y2="15" stroke="#e2e8f0" strokeWidth="2" />
-                        <circle cx="50" cy="50" r="3" fill="#e2e8f0" />
-                    </motion.g>
-                    <defs>
-                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#22c55e" />
-                            <stop offset="50%" stopColor="#f59e0b" />
-                            <stop offset="100%" stopColor="#ef4444" />
-                        </linearGradient>
-                    </defs>
-                </svg>
+        <div className="w-full max-w-md mx-auto flex flex-col items-center">
+            {/* The main linear progress bar container */}
+            <div className="w-full">
+                {/* Background track of the progress bar */}
+                <div className="h-3 bg-slate-700 rounded-full w-full relative">
+                    {/* Animated fill bar with a gradient matching the original theme */}
+                    <motion.div
+                        className="h-3 rounded-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-500"
+                        initial={{ width: '0%' }}
+                        animate={{ width: `${percentage}%` }}
+                        transition={{ type: 'spring', stiffness: 50, damping: 20 }}
+                    />
+                </div>
             </div>
-            <div className="flex justify-between w-full text-xs text-slate-400 px-1 -mt-2">
+
+            {/* Labels below the bar */}
+            <div className="flex justify-between w-full text-xs text-slate-400 mt-2">
                 <span>High Consensus</span>
                 <span>High Disagreement</span>
             </div>
@@ -379,10 +379,20 @@ const ResearchPage = () => {
     };
 
     const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
+        // A fallback for the clipboard API
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
             setCopySuccess(activeCitation);
             setTimeout(() => setCopySuccess(''), 2000);
-        }).catch(err => console.error('Failed to copy: ', err));
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+        }
+        document.body.removeChild(textArea);
     };
 
     const Section = ({ title, children }) => (
@@ -557,9 +567,9 @@ const HubPage = () => {
                                      <YAxis stroke="#94a3b8" fontSize={12} />
                                      <RechartsTooltip cursor={{fill: 'rgba(14, 165, 233, 0.1)'}} contentStyle={{backgroundColor: '#1e293b', border: '1px solid #334155', color: '#cbd5e1'}}/>
                                      <Bar dataKey="count" name="Publications">
-                                        {pubDataByYear.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill="#2dd4bf" />
-                                        ))}
+                                         {pubDataByYear.map((entry, index) => (
+                                             <Cell key={`cell-${index}`} fill="#2dd4bf" />
+                                         ))}
                                      </Bar>
                                  </BarChart>
                              </ResponsiveContainer>
@@ -674,7 +684,7 @@ function AppContent() {
     return (
         <div className="bg-slate-900 text-slate-300 min-h-screen font-sans">
             <style>{`
-                .bg-grid-slate-700\\/\\[0\\.05\\] { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(51 65 85 / 0.2)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e"); }
+                .bg-grid-slate-700\/\\[0\\.05\\] { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(51 65 85 / 0.2)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e"); }
                 body { background-color: #0f172a; } /* Match body bg to prevent flashes */
                 #root { height: 100%; }
             `}</style>
