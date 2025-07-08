@@ -1,9 +1,18 @@
+@article{akiyama2016method,
+  title={A Method for Measuring Consensus Within Groups: An Index of Disagreement Via Conditional Probability},
+  author={Akiyama, Y. and Nolan, J. and Darrah, M. and Abdal Rahem, M. and Wang, L.},
+  journal={Information Sciences},
+  volume={345},
+  pages={116--128},
+  year={2016},
+  doi={10.1016/j.ins.2016.01.052}
+}
 import React, { useState, useMemo, createContext, useContext } from 'react';
 import { TrendingUp, FileText, FlaskConical, PenSquare, MessageSquare, Copy, Download, Info, Search, ChevronsUpDown, X, Menu } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
 
-//--- GLOBAL STATE & NAVIGATION CONTEXT ---//
+//--- GLOBAL STATE & NAVIGnATION CONTEXT ---//
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
@@ -373,7 +382,7 @@ const ResearchPage = () => {
     const [copySuccess, setCopySuccess] = useState('');
 
     const citations = {
-        APA: "Researcher, A. (2025). The index of disagreement: A novel framework for consensus measurement. Journal of Advanced Quantitative Methods, 15(2), 123-145. https://doi.org/10.xxxx/j.jaqm.2025.xx.xxx",
+        APA: " A novel framework for consensus measurement. Journal of Advanced Quantitative Methods, 15(2), 123-145. https://doi.org/10.xxxx/j.jaqm.2025.xx.xxx",
         MLA: 'Researcher, Anonymous. "The Index of Disagreement: A Novel Framework for Consensus Measurement." Journal of Advanced Quantitative Methods, vol. 15, no. 2, 2025, pp. 123-45, doi:10.xxxx/j.jaqm.2025.xx.xxx.',
         BibTeX: `@article{researcher2025index,\n  title={The Index of Disagreement: A Novel Framework for Consensus Measurement},\n  author={Researcher, Anonymous},\n  journal={Journal of Advanced Quantitative Methods},\n  volume={15},\n  number={2},\n  pages={123--145},\n  year={2025},\n  publisher={Academic Press},\n  doi={10.xxxx/j.jaqm.2025.xx.xxx}\n}`
     };
