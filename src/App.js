@@ -375,7 +375,9 @@ const ResearchPage = () => {
     const citations = {
         APA: "Akiyama, Y., Nolan, J., Darrah, M., Abdal Rahem, M., & Wang, L. (2016). A method for measuring consensus within groups: An index of disagreement via conditional probability. Information Sciences, 345, 116–128. https://doi.org/10.1016/j.ins.2016.01.052",
         MLA: 'Akiyama, Y., et al. "A Method for Measuring Consensus Within Groups: An Index of Disagreement Via Conditional Probability." Information Sciences, vol. 345, 2016, pp. 116–128. https://doi.org/10.1016/j.ins.2016.01.052',
-        BibTeX: `@article{researcher2025index,\n  title={The Index of Disagreement: A Novellllllllll Framework for Consensus Measurement},\n  author={Researcher, Anonymous},\n  journal={Journal of Advanced Quantitative Methods},\n  volume={15},\n  number={2},\n  pages={123--145},\n  year={2025},\n  publisher={Academic Press},\n  doi={10.xxxx/j.jaqm.2025.xx.xxx}\n}`
+        BibTeX: `@article{akiyama2016method,\n title={A Method for Measuring Consensus Within Groups: An Index of Disagreement Via Conditional Probability},\n author={Akiyama, Y. and Nolan, J. and Darrah, M. and Abdal Rahem, M. and Wang, L.},\n journal={Information Sciences}, \n volume={345},\n pages={116--128}\n year={2016},\n doi={10.1016/j.ins.2016.01.052}'
+}
+`
     };
 
     const copyToClipboard = (text) => {
