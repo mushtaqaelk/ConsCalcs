@@ -406,11 +406,11 @@ const ResearchPage = () => {
                 </div>
 
                 <div className="bg-slate-800/50 border border-slate-700 p-6 sm:p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-white mb-2">The Index of Disagreement: A Novel Framework for Consensus Measurement</h3>
-                    <p className="text-slate-400 mb-8 font-medium">Journal of Advanced Quantitative Methods, 2025</p>
+                    <h3 className="text-2xl font-bold text-white mb-2">A method for measuring consensus within groups: An index of disagreement via conditional probability</h3>
+                    <p className="text-slate-400 mb-8 font-medium">Journal of Information Sciences, 2025</p>
                     
                     <Section title="Abstract">
-                        <p>This paper introduces a new mathematical framework for quantifying the level of disagreement within a group, termed the "Index of Disagreement" (L). Traditional measures of central tendency and dispersion, such as mean and variance, often fail to capture the nuances of agreement, particularly in skewed or bimodal distributions common in survey data. Our proposed model chain provides a multi-step, deterministic formula that translates mean (C) and variance (D) into a single, interpretable index.</p>
+                        <p>This paper presents a new index of disagreement (or measure of consensus) for comparison of data collected using Likert items. This new index, which assesses the level of disagreement among group members, exploits the conditional distribution of the variance for a given mean. The variance is often used as a measure of disagreement, with high variance seen as a high disagreement in a group. However, since the range of the variance is a function of the mean, this implies that for a mean close to the end points of the scale, the range of the variance is relatively small and for a mean at the center of the scale the range of the variance is larger. The index of disagreement introduced in this paper takes into account both the mean and the variance and provides a way to compare two groups that is more meaningful than just considering the variance or other measures of disagreement or consensus that only depend on the variance.
                     </Section>
                     <Section title="2. The Mathematical Model">
                         <p>The model is a sequential calculation starting from user-provided Mean (C) and Variance (D). The core idea is to transform these inputs into a standardized space to evaluate the distribution of disagreement.</p>
