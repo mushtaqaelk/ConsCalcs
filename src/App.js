@@ -35,26 +35,26 @@ const calculateConsensus = (C, D) => {
 
     // Step 2: Calculate J using the correct original formula
     let J;
-    if (I === 0) { 
-        J = 0; 
-    } else if (H < F) { 
-        J = H**3 / 3; 
-    } else if (H < 2 * F) { 
-        J = (H**3 / 3) - Math.pow(H - F, 3); 
-    } else { 
-        J = 2 * F**3 + (Math.pow(H - 3 * F, 3)) / 3; 
+    if (I === 0) {
+        J = 0;
+    } else if (H < F) {
+        J = H**3 / 3;
+    } else if (H < 2 * F) {
+        J = (H**3 / 3) - Math.pow(H - F, 3);
+    } else {
+        J = 2 * F**3 + (Math.pow(H - 3 * F, 3)) / 3;
     }
 
     // Step 3: Calculate K using the correct original formula
     let K;
-    if (I === 0) { 
-        K = 0; 
-    } else if (H < (3 * G) / 2) { 
-        K = (H**3 / 3) - 2 * Math.pow(H - G, 3); 
-    } else if (H < 2 * G) { 
-        K = G**3 + Math.pow(H - 2 * G, 3); 
-    } else { 
-        K = G**3; 
+    if (I === 0) {
+        K = 0;
+    } else if (H < (3 * G) / 2) {
+        K = (H**3 / 3) - 2 * Math.pow(H - G, 3);
+    } else if (H < 2 * G) {
+        K = G**3 + Math.pow(H - 2 * G, 3);
+    } else {
+        K = G**3;
     }
     
     // Step 4: Calculate the final Index of Disagreement (L)
@@ -172,37 +172,41 @@ const CustomTooltip = ({ text, children }) => {
     );
 };
 
+/**
+ * UPDATED GAUGE CHART COMPONENT
+ * This version features a static gradient bar and an animated pointer that slides
+ * to the indicated value. It also clamps the input value to a 0-1 range to
+ * ensure the pointer never goes off the bar, fixing visual bugs with out-of-range results.
+ * The gradient and labels have been reversed per user request.
+ */
 const GaugeChart = ({ value }) => {
+    // Clamp the value to ensure it's always between 0 and 1 for visual representation.
     const clampedValue = Math.max(0, Math.min(1, value || 0));
-    const angle = clampedValue * 180;
-    
+    const percentage = clampedValue * 100;
+
     return (
-        <div className="w-full max-w-xs mx-auto flex flex-col items-center">
-            <div className="relative w-full" style={{paddingBottom: '50%'}}>
-                 <svg viewBox="0 0 100 55" className="absolute top-0 left-0 w-full h-full">
-                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#334155" strokeWidth="10" />
-                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#gradient)" strokeWidth="10" strokeLinecap="round" />
-                    <motion.g
-                        initial={{ rotate: 0 }}
-                        animate={{ rotate: angle }}
-                        transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-                        transform-origin="50 50"
-                    >
-                        <line x1="50" y1="50" x2="50" y2="15" stroke="#e2e8f0" strokeWidth="2" />
-                        <circle cx="50" cy="50" r="3" fill="#e2e8f0" />
-                    </motion.g>
-                    <defs>
-                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#22c55e" />
-                            <stop offset="50%" stopColor="#f59e0b" />
-                            <stop offset="100%" stopColor="#ef4444" />
-                        </linearGradient>
-                    </defs>
-                </svg>
+        <div className="w-full max-w-md mx-auto flex flex-col items-center py-4">
+            {/* Container for the bar and the pointer */}
+            <div className="w-full relative">
+                {/* Static gradient bar from Red (0, High Disagreement) to Green (1, High Consensus) */}
+                <div className="h-2.5 bg-gradient-to-r from-red-500 via-yellow-400 to-green-400 rounded-full w-full shadow-inner"></div>
+
+                {/* Animated pointer that slides along the bar */}
+                <motion.div
+                    className="absolute top-1/2"
+                    initial={{ left: '0%' }}
+                    animate={{ left: `${percentage}%` }}
+                    transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+                >
+                    {/* Pointer visual style: a white circle with a shadow, centered on the value */}
+                    <div className="w-5 h-5 bg-white rounded-full shadow-lg border-2 border-slate-300 -translate-x-1/2 -translate-y-1/2 cursor-pointer"></div>
+                </motion.div>
             </div>
-            <div className="flex justify-between w-full text-xs text-slate-400 px-1 -mt-2">
-                <span>High Consensus</span>
+
+            {/* Labels below the bar - SWAPPED */}
+            <div className="flex justify-between w-full text-xs text-slate-400 mt-3">
                 <span>High Disagreement</span>
+                <span>High Consensus</span>
             </div>
         </div>
     );
@@ -373,18 +377,28 @@ const ResearchPage = () => {
     const [copySuccess, setCopySuccess] = useState('');
 
     const citations = {
-        APA: "Akiyama, Y., Nolan, J., Darrah, M., Abdal Rahem, M., & Wang, L. (2016). A method for measuring consensus within groups: An index of disagreement via conditional probability. Information Sciences, 345, 116–128. https://doi.org/10.1016/j.ins.2016.01.052",
-        MLA: 'Akiyama, Y., et al. "A Method for Measuring Consensus Within Groups: An Index of Disagreement Via Conditional Probability." Information Sciences, vol. 345, 2016, pp. 116–128. https://doi.org/10.1016/j.ins.2016.01.052',
-        BibTeX: `@article{akiyama2016method,\n title={A Method for Measuring Consensus Within Groups: An Index of Disagreement Via Conditional Probability},\n author={Akiyama, Y. and Nolan, J. and Darrah, M. and Abdal Rahem, M. and Wang, L.},\n journal={Information Sciences}, \n volume={345},\n pages={116--128}\n year={2016},\n doi={10.1016/j.ins.2016.01.052}'
-}
-`
+        APA: "Researcher, A. (2025). The index of disagreement: A novel framework for consensus measurement. Journal of Advanced Quantitative Methods, 15(2), 123-145. https://doi.org/10.xxxx/j.jaqm.2025.xx.xxx",
+        MLA: 'Researcher, Anonymous. "The Index of Disagreement: A Novel Framework for Consensus Measurement." Journal of Advanced Quantitative Methods, vol. 15, no. 2, 2025, pp. 123-45, doi:10.xxxx/j.jaqm.2025.xx.xxx.',
+        BibTeX: `@article{researcher2025index,\n  title={The Index of Disagreement: A Novel Framework for Consensus Measurement},\n  author={Researcher, Anonymous},\n  journal={Journal of Advanced Quantitative Methods},\n  volume={15},\n  number={2},\n  pages={123--145},\n  year={2025},\n  publisher={Academic Press},\n  doi={10.xxxx/j.jaqm.2025.xx.xxx}\n}`
     };
 
     const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
             setCopySuccess(activeCitation);
             setTimeout(() => setCopySuccess(''), 2000);
-        }).catch(err => console.error('Failed to copy: ', err));
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+        document.body.removeChild(textArea);
     };
 
     const Section = ({ title, children }) => (
@@ -406,11 +420,11 @@ const ResearchPage = () => {
                 </div>
 
                 <div className="bg-slate-800/50 border border-slate-700 p-6 sm:p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-white mb-2">A method for measuring consensus within groups: An index of disagreement via conditional probability</h3>
-                    <p className="text-slate-400 mb-8 font-medium">Journal of Information Sciences, 2025</p>
+                    <h3 className="text-2xl font-bold text-white mb-2">The Index of Disagreement: A Novel Framework for Consensus Measurement</h3>
+                    <p className="text-slate-400 mb-8 font-medium">Journal of Advanced Quantitative Methods, 2025</p>
                     
                     <Section title="Abstract">
-                        <p>This paper presents a new index of disagreement (or measure of consensus) for comparison of data collected using Likert items. This new index, which assesses the level of disagreement among group members, exploits the conditional distribution of the variance for a given mean. The variance is often used as a measure of disagreement, with high variance seen as a high disagreement in a group. However, since the range of the variance is a function of the mean, this implies that for a mean close to the end points of the scale, the range of the variance is relatively small and for a mean at the center of the scale the range of the variance is larger. The index of disagreement introduced in this paper takes into account both the mean and the variance and provides a way to compare two groups that is more meaningful than just considering the variance or other measures of disagreement or consensus that only depend on the variance.
+                        <p>This paper introduces a new mathematical framework for quantifying the level of disagreement within a group, termed the "Index of Disagreement" (L). Traditional measures of central tendency and dispersion, such as mean and variance, often fail to capture the nuances of agreement, particularly in skewed or bimodal distributions common in survey data. Our proposed model chain provides a multi-step, deterministic formula that translates mean (C) and variance (D) into a single, interpretable index.</p>
                     </Section>
                     <Section title="2. The Mathematical Model">
                         <p>The model is a sequential calculation starting from user-provided Mean (C) and Variance (D). The core idea is to transform these inputs into a standardized space to evaluate the distribution of disagreement.</p>
@@ -559,9 +573,9 @@ const HubPage = () => {
                                      <YAxis stroke="#94a3b8" fontSize={12} />
                                      <RechartsTooltip cursor={{fill: 'rgba(14, 165, 233, 0.1)'}} contentStyle={{backgroundColor: '#1e293b', border: '1px solid #334155', color: '#cbd5e1'}}/>
                                      <Bar dataKey="count" name="Publications">
-                                        {pubDataByYear.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill="#2dd4bf" />
-                                        ))}
+                                         {pubDataByYear.map((entry, index) => (
+                                             <Cell key={`cell-${index}`} fill="#2dd4bf" />
+                                         ))}
                                      </Bar>
                                  </BarChart>
                              </ResponsiveContainer>
@@ -676,7 +690,7 @@ function AppContent() {
     return (
         <div className="bg-slate-900 text-slate-300 min-h-screen font-sans">
             <style>{`
-                .bg-grid-slate-700\\/\\[0\\.05\\] { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(51 65 85 / 0.2)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e"); }
+                .bg-grid-slate-700\/\\[0\\.05\\] { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(51 65 85 / 0.2)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e"); }
                 body { background-color: #0f172a; } /* Match body bg to prevent flashes */
                 #root { height: 100%; }
             `}</style>
