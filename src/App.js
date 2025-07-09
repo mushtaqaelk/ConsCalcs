@@ -174,35 +174,39 @@ const CustomTooltip = ({ text, children }) => {
 
 /**
  * UPDATED GAUGE CHART COMPONENT
- * This component now displays a linear progress bar instead of a radial gauge.
- * It uses framer-motion for a smooth animation effect.
- * The component's interface (props) remains the same to ensure it's a non-breaking change.
+ * This version features a static gradient bar and an animated pointer that slides
+ * to the indicated value. It also clamps the input value to a 0-1 range to
+ * ensure the pointer never goes off the bar, fixing visual bugs with out-of-range results.
+ * The gradient and labels have been reversed per user request.
  */
 const GaugeChart = ({ value }) => {
-    // Clamp the value between 0 and 1 to handle potential edge cases from the formula.
+    // Clamp the value to ensure it's always between 0 and 1 for visual representation.
     const clampedValue = Math.max(0, Math.min(1, value || 0));
     const percentage = clampedValue * 100;
 
     return (
-        <div className="w-full max-w-md mx-auto flex flex-col items-center">
-            {/* The main linear progress bar container */}
-            <div className="w-full">
-                {/* Background track of the progress bar */}
-                <div className="h-3 bg-slate-700 rounded-full w-full relative">
-                    {/* Animated fill bar with a gradient matching the original theme */}
-                    <motion.div
-                        className="h-3 rounded-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-500"
-                        initial={{ width: '0%' }}
-                        animate={{ width: `${percentage}%` }}
-                        transition={{ type: 'spring', stiffness: 50, damping: 20 }}
-                    />
-                </div>
+        <div className="w-full max-w-md mx-auto flex flex-col items-center py-4">
+            {/* Container for the bar and the pointer */}
+            <div className="w-full relative">
+                {/* Static gradient bar from Red (0, High Disagreement) to Green (1, High Consensus) */}
+                <div className="h-2.5 bg-gradient-to-r from-red-500 via-yellow-400 to-green-400 rounded-full w-full shadow-inner"></div>
+
+                {/* Animated pointer that slides along the bar */}
+                <motion.div
+                    className="absolute top-1/2"
+                    initial={{ left: '0%' }}
+                    animate={{ left: `${percentage}%` }}
+                    transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+                >
+                    {/* Pointer visual style: a white circle with a shadow, centered on the value */}
+                    <div className="w-5 h-5 bg-white rounded-full shadow-lg border-2 border-slate-300 -translate-x-1/2 -translate-y-1/2 cursor-pointer"></div>
+                </motion.div>
             </div>
 
-            {/* Labels below the bar */}
-            <div className="flex justify-between w-full text-xs text-slate-400 mt-2">
-                <span>High Consensus</span>
+            {/* Labels below the bar - SWAPPED */}
+            <div className="flex justify-between w-full text-xs text-slate-400 mt-3">
                 <span>High Disagreement</span>
+                <span>High Consensus</span>
             </div>
         </div>
     );
@@ -379,9 +383,11 @@ const ResearchPage = () => {
     };
 
     const copyToClipboard = (text) => {
-        // A fallback for the clipboard API
         const textArea = document.createElement("textarea");
         textArea.value = text;
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
@@ -390,7 +396,7 @@ const ResearchPage = () => {
             setCopySuccess(activeCitation);
             setTimeout(() => setCopySuccess(''), 2000);
         } catch (err) {
-            console.error('Fallback: Oops, unable to copy', err);
+            console.error('Failed to copy: ', err);
         }
         document.body.removeChild(textArea);
     };
